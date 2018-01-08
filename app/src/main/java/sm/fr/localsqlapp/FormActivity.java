@@ -50,6 +50,11 @@ public class FormActivity extends AppCompatActivity {
         try {
             db.getWritableDatabase().insert("contacts", null, insertValues);
             Toast.makeText(this,"Insertion Ok",Toast.LENGTH_LONG).show();
+            ((EditText) findViewById(R.id.editTextNom)).setText("");
+            ((EditText) findViewById(R.id.editTextPrenom)).setText("");
+            ((EditText) findViewById(R.id.editTextEmail)).setText("");
+
+
 
         }catch(SQLiteException ex){
             Log.e("SQL EXCEPTION", ex.getMessage());
