@@ -2,6 +2,7 @@ package sm.fr.localsqlapp;
 
 
 
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,11 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.form_activity);
+
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public void onValid(View v) {
