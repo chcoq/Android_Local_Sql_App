@@ -43,9 +43,9 @@ public class FormActivity extends AppCompatActivity {
 
         //Définition  des données à inserer
         ContentValues insertValues = new ContentValues();
-        insertValues.put("first_name", String.valueOf(firstnameEditText));
-        insertValues.put("name", String.valueOf(nameEditText));
-        insertValues.put("email", String.valueOf(emailEditText));
+        insertValues.put("first_name", String.valueOf(firstnameEditText.getText()));
+        insertValues.put("name", String.valueOf(nameEditText.getText()));
+        insertValues.put("email", String.valueOf(emailEditText.getText()));
         //Insertiondes données
         try {
             db.getWritableDatabase().insert("contacts", null, insertValues);

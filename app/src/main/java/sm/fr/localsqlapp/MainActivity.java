@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +15,22 @@ import java.util.Map;
 import sm.fr.localsqlapp.database.DatabaseHandler;
 
 public class MainActivity extends AppCompatActivity {
+    private ListView contactListView;
+    private List<Map<String,String>>contactList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Référence au widget ListView sur le layout
+        ListView contactListView = findViewById(R.id.contactListView);
+        //Récupération  de la  ligne des contacts
+        contactList= this.getAllContatcts();
+        //Création d'un contactArrayAdapter
+        ContactArrayAdapter contatctAdapter = new ContactArrayAdapter(this, contactList);
+        //Définition de l'adapter de notre listView
+        contactListView.setAdapter(contatctAdapter);
     }
 
     /**
