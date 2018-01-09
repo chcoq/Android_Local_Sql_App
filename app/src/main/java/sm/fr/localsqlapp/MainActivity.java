@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Map<String, String>> contactList;
     private Integer selectedIndex;
     private Map<String, String> selectedPerson;
-
+    private Intent Intention;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +34,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
          contactListView = findViewById(R.id.contactListView);
         contactListInit();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode ==1 && requestCode == RESULT_OK){
+            Toast.makeText(this,"Mise à jour effectuée",Toast.LENGTH_SHORT).show();
+            this.contactListInit();
+        }
     }
 
     private void contactListInit() {
@@ -59,13 +67,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Intent Intention= new Intent(this, FormActivity.class);
         switch (item.getItemId()) {
             case R.id.mainMenuOptionDelete:
                 this.deleteSelectedContact();
                 break;
             case R.id.mainMenuOptionEdit:
+                //passage des paramètres à l'intention
+                Intention.putExtra("name",this.selectedPerson.get("name"));
+                Intention.putExtra("first_name",this.selectedPerson.get("first_name"));
+                Intention.putExtra("email",this.selectedPerson.get("email"));
+                Intention.putExtra("id",this.selectedPerson.get("id"));
 
+                //Lancement de l'activité FormActivity
+                startActivityForResult(Intention, 1);
                 break;
         }
 
