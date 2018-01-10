@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sm.fr.localsqlapp.database.ContactDAO;
 import sm.fr.localsqlapp.database.DatabaseHandler;
+import sm.fr.localsqlapp.model.Contact;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private ListView contactListView;
@@ -27,12 +29,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Map<String, String> selectedPerson;
     private Intent Intention;
     private final String LIFE_CYCLE = "cycle de vie";
+
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+    this.testDAO();
         //Référence au widget ListView sur le layout
          contactListView = findViewById(R.id.contactListView);
         contactListInit();
@@ -43,12 +47,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             this.selectedIndex = savedInstanceState.getInt("selectedIndex");
             if (this.selectedIndex !=null){
                 this.selectedPerson = this.contactList.get(this.selectedIndex);
-
             }
         }
-
         Log.i(LIFE_CYCLE, "onCreate: ");
-
+    }
+    private  void testDAO(){
+        try{
+            ContactDAO dao = new ContactDAO(new DatabaseHandler(this));
+            Contact contact=dao.findOnById(1);
+            Log.i("DAO",contact.getName());
+        }catch (SQLiteException ex){
+            Log.i("DEBUG",ex.getMessage());
+        }
 
     }
 
