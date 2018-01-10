@@ -24,11 +24,14 @@ import sm.fr.localsqlapp.model.Contact;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private ListView contactListView;
-    private List<Map<String, String>> contactList;
+    private List<Contact> contactList;
     private Integer selectedIndex;
-    private Map<String, String> selectedPerson;
+    private Contact selectedPerson;
     private Intent Intention;
     private final String LIFE_CYCLE = "cycle de vie";
+    private  DatabaseHandler db;
+    private  ContactDAO dao;
+    private ContactArrayAdapter contactAdapter;
 
 
     @Override
@@ -36,11 +39,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    this.testDAO();
+
+
+        //Instenciation de la connexion à  la base de données
+        this.db = new DatabaseHandler( this);
+        //Instanciation du DAO pour les contacts
+        this.dao= new ContactDAO(this.db);
+
         //Référence au widget ListView sur le layout
          contactListView = findViewById(R.id.contactListView);
         contactListInit();
-
+        //this.testDAO();
         //Récupération des données persistées sur le layout
         if(savedInstanceState!=null){
             //Récupération de l'index de séléction sauvergarder
@@ -50,16 +59,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         Log.i(LIFE_CYCLE, "onCreate: ");
-    }
-    private  void testDAO(){
-        try{
-            ContactDAO dao = new ContactDAO(new DatabaseHandler(this));
-            Contact contact=dao.findOnById(1);
-            Log.i("DAO",contact.getName());
-        }catch (SQLiteException ex){
-            Log.i("DEBUG",ex.getMessage());
-        }
-
     }
 
     @Override
@@ -72,11 +71,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void contactListInit() {
         //Récupération  de la  liste des contacts
-        contactList = this.getAllContatcts();
+        contactList = this.dao.findAll();
         //Création d'un contactArrayAdapter
-        ContactArrayAdapter contatctAdapter = new ContactArrayAdapter(this, contactList);
+         contactAdapter = new ContactArrayAdapter(this, contactList);
         //Définition de l'adapter de notre listView
-        contactListView.setAdapter(contatctAdapter);
+        contactListView.setAdapter(contactAdapter);
 
         //Définition d'un écouteur d'événement pour
         contactListView.setOnItemClickListener(this);
@@ -100,10 +99,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.mainMenuOptionEdit:
                 //passage des paramètres à l'intention
-                Intention.putExtra("name",this.selectedPerson.get("name"));
-                Intention.putExtra("first_name",this.selectedPerson.get("first_name"));
-                Intention.putExtra("email",this.selectedPerson.get("email"));
-                Intention.putExtra("id",this.selectedPerson.get("id"));
+                Intention.putExtra("name",this.selectedPerson.getName());
+                Intention.putExtra("first_name",this.selectedPerson.getFirstName());
+                Intention.putExtra("email",this.selectedPerson.getEmail());
+                Intention.putExtra("id",String.valueOf(this.selectedPerson.getId()));
 
                 //Lancement de l'activité FormActivity
                 startActivityForResult(Intention, 1);
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try{
                 //Définition de la requête sql et  des paramètres
                 String sql = "DELETE FROM contacts WHERE ID=?";
-                String[] params = {this.selectedPerson.get("id")};
+                String[] params = {String.valueOf(this.selectedPerson.getId())};
 
                 //Exécution de la requête
                 DatabaseHandler db = new DatabaseHandler(this);
@@ -137,9 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private void editSelectedContact() {
 
-    }
 
     /**
      * lancement de l'activité formulaire au clic sur un bouton
@@ -218,7 +215,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("selectedIndex",this.selectedIndex);
+        if (this.selectedIndex != null){
+            outState.putInt("selectedIndex",this.selectedIndex);
+        }
+
         super.onSaveInstanceState(outState);
     }
 }

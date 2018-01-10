@@ -81,7 +81,7 @@ public class FormActivity extends AppCompatActivity {
             if(this.contactId !=null){
                 //Mise à jour d'un contact existant
                 String[] params = {contactId};
-                db.getWritableDatabase().update("contact",
+                db.getWritableDatabase().update("contacts",
                         insertValues,
                         "id=?",
                         params);
