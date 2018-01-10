@@ -1,12 +1,11 @@
 package sm.fr.localsqlapp.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import sm.fr.localsqlapp.model.Contact;
 
 public class ContactDAO {
@@ -83,7 +82,43 @@ public class ContactDAO {
         String[] params = {id.toString()};
         String sql = "DELETE FROM contacts WHERE id=?";
         this.db.getWritableDatabase().execSQL(sql, params);
+    }
 
+    public void persist(Contact entity) {
+        if (entity.getId() == null) {
+            this.insert(entity);
+        } else {
+            this.update(entity);
+        }
+    }
+
+    private ContentValues getContenteValuesFormEntity(Contact entity) {
+        ContentValues values = new ContentValues();
+        values.put("name", entity.getName());
+        values.put("first_Name", entity.getFirstName());
+        values.put("email", entity.getEmail());
+        return values;
+    }
+
+    private void insert(Contact entity) {
+        Long id = this.db.getWritableDatabase().insert("contacts", null, this
+                .getContenteValuesFormEntity(entity));
+        entity.setId(id);
 
     }
+
+    private void update(Contact entity) {
+        String[] params = {entity.getId().toString()};
+        this.db.getWritableDatabase().update(
+                "contacts",
+                this.getContenteValuesFormEntity(entity),
+                "id=?",
+                params
+
+        );
+    }
+
+
+
+
 }//fin class ContactDAO
