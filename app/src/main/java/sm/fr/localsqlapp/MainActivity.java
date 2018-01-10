@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Référence au widget ListView sur le layout
          contactListView = findViewById(R.id.contactListView);
         contactListInit();
-        //this.testDAO();
         //Récupération des données persistées sur le layout
         if(savedInstanceState!=null){
             //Récupération de l'index de séléction sauvergarder
@@ -148,28 +147,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(FormIntent);
     }
 
-    private List<Map<String, String>> getAllContatcts() {
-        //instanciation de la connexion à la base de données
-        DatabaseHandler db = new DatabaseHandler(this);
 
-        //Exécution de la requête de selection
-        Cursor cursor = db.getReadableDatabase().rawQuery("SELECT name,first_name,email,id FROM contacts", null);
-        //Instenciation de la ligne qui renvera les données.
-        List<Map<String, String>> contactList = new ArrayList<>();
-
-        //Parcours du curseur
-        while (cursor.moveToNext()) {
-            Map<String, String> contactCols = new HashMap<>();
-            //remplissage du tableau associatif en fonction des données du curseur
-            contactCols.put("name", cursor.getString(0));
-            contactCols.put("first_name", cursor.getString(1));
-            contactCols.put("email", cursor.getString(2));
-            contactCols.put("id", cursor.getString(3));
-            //Ajout du Map à la liste
-            contactList.add(contactCols);
-        }
-        return contactList;
-    }
 
 
     @Override
