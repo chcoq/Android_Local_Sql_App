@@ -23,12 +23,12 @@ import sm.fr.localsqlapp.database.DatabaseHandler;
 import sm.fr.localsqlapp.model.Contact;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    private final String LIFE_CYCLE = "cycle de vie";
     private ListView contactListView;
     private List<Contact> contactList;
     private Integer selectedIndex;
     private Contact selectedPerson;
     private Intent Intention;
-    private final String LIFE_CYCLE = "cycle de vie";
     private  DatabaseHandler db;
     private  ContactDAO dao;
     private ContactArrayAdapter contactAdapter;
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 //Lancement de l'activité FormActivity
                 startActivityForResult(Intention, 1);
+                this.contactListInit();
                 break;
         }
 
@@ -115,14 +116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void deleteSelectedContact() {
         if (this.selectedIndex != null) {
             try{
-                //Définition de la requête sql et  des paramètres
-                String sql = "DELETE FROM contacts WHERE ID=?";
-                String[] params = {String.valueOf(this.selectedPerson.getId())};
-
-                //Exécution de la requête
-                DatabaseHandler db = new DatabaseHandler(this);
-                db.getWritableDatabase().execSQL(sql, params);
-
+                this.dao.deleteOneById(Long.valueOf(this.selectedIndex));
                 //Rénitialisation de la laiste de contacts
                this.contactListInit();
             }catch ( SQLiteException ex){
