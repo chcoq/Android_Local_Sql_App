@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Integer selectedIndex;
     private Map<String, String> selectedPerson;
     private Intent Intention;
+    private final String LIFE_CYCLE = "cycle de vie";
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -33,6 +36,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Référence au widget ListView sur le layout
          contactListView = findViewById(R.id.contactListView);
         contactListInit();
+
+        //Récupération des données persistées sur le layout
+        if(savedInstanceState!=null){
+            //Récupération de l'index de séléction sauvergarder
+            this.selectedIndex = savedInstanceState.getInt("selectedIndex");
+            if (this.selectedIndex !=null){
+                this.selectedPerson = this.contactList.get(this.selectedIndex);
+
+            }
+        }
+
+        Log.i(LIFE_CYCLE, "onCreate: ");
+
 
     }
 
@@ -154,5 +170,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.selectedIndex = i;
         this.selectedPerson = contactList.get(i);
         Toast.makeText(this, "ligne" + i + "cliquer", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(LIFE_CYCLE,"onSart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(LIFE_CYCLE, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(LIFE_CYCLE, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(LIFE_CYCLE,"onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(LIFE_CYCLE,"onDestroy");
+    }
+
+    /**
+     * Persistance des données avant déstruction de mon acticité
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("selectedIndex",this.selectedIndex);
+        super.onSaveInstanceState(outState);
     }
 }
